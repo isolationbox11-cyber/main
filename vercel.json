@@ -1,1 +1,1 @@
-{"routes":[{"src":"/(.*)","dest":"/index.html"}]}
+{ "redirects": [ { "source": "/", "has": [{ "type": "host", "value": "www.salemcybervault.com" }], "destination": "https://salemcybervault.com", "permanent": true } ] }
