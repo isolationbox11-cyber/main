@@ -1,16 +1,16 @@
-## Hi there 👋
+# Salem Cyber Vault
 
-<!--
-**isolationbox11-cyber/isolationbox11-cyber** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+A simple Next.js cybersecurity dashboard.
 
-Here are some ideas to get you started:
+## How to run locally
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+```bash
+npm install
+npm run dev
+```
+
+## How to deploy
+
+1. Go to [vercel.com](https://vercel.com)
+2. Import this repository
+3. Click "Deploy"
