@@ -1,6 +1,1 @@
-{
-  "buildCommand": "npm run build",
-  "outputDirectory": ".next",
-  "framework": "nextjs",
-  "installCommand": "npm install"
-}
+{ "builds": [ { "src": "index.html", "use": "@vercel/static" } ], "routes": [ { "src": "/(.*)", "dest": "/index.html" } ] }
