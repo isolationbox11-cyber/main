@@ -7,6 +7,7 @@ import {
   Activity, 
   AlertTriangle, 
   BookOpen, 
+  Eye,
   HelpCircle, 
   Cog, 
   GalleryVertical, 
@@ -35,9 +36,14 @@ const links = [
     icon: Globe
   },
   {
+    name: "Security Scan",
+    href: "/dashboard/security-scan",
+    icon: Eye
+  },
+  {
     name: "Threats",
     href: "/dashboard/threats",
-    icon: Skull
+    icon: Shield
   },
   {
     name: "Vulnerabilities",
@@ -96,7 +102,7 @@ export function DashboardNav() {
             <link.icon className={cn(
               "mr-3 h-4 w-4",
               isActive 
-                ? "text-orange-500" 
+                ? "text-blue-500" 
                 : "text-muted-foreground group-hover:text-foreground"
             )} />
             {link.name}
@@ -112,11 +118,11 @@ export function DashboardNav() {
       <div className="mt-8 p-4 border-t">
         <div className="bg-muted/50 rounded-md p-3">
           <div className="flex items-center">
-            <Lock className="h-4 w-4 text-orange-500 mr-2" />
-            <h4 className="text-sm font-medium">Halloween Special</h4>
+            <Eye className="h-4 w-4 text-blue-500 mr-2" />
+            <h4 className="text-sm font-medium">Security Watch Active</h4>
           </div>
           <p className="text-xs text-muted-foreground mt-1">
-            Unlock all premium features until October 31st! 🎃
+            Enhanced surveillance features enabled 👁️
           </p>
         </div>
       </div>
