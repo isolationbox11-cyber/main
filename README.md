@@ -14,3 +14,6 @@ npm run dev
 1. Go to [vercel.com](https://vercel.com)
 2. Import this repository
 3. Click "Deploy"
+
+
+<!-- redeploy: 2025-08-03 -->
