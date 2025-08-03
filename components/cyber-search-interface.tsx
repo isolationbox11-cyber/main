@@ -171,7 +171,7 @@ export function CyberSearchInterface() {
         <AlertDescription className="flex items-center justify-between">
           <span>
             <span className="text-orange-400 font-bold">🔮 Salem Cyber Vault</span> allows you to search the dark corners of the internet safely. 
-            Venture through our digital séance to discover devices and services lurking in the web's shadows.
+            Venture through our digital séance to discover devices and services lurking in the web&apos;s shadows.
           </span>
         </AlertDescription>
       </Alert>
@@ -282,7 +282,7 @@ export function CyberSearchInterface() {
                   🔍 Common Haunted Searches
                 </CardTitle>
                 <CardDescription className="text-orange-300/70">
-                  Discover digital entities lurking in the internet's shadows
+                  Discover digital entities lurking in the internet&apos;s shadows
                 </CardDescription>
               </CardHeader>
               <CardContent>
