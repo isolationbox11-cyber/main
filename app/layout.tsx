@@ -6,6 +6,7 @@ import { FloatingEyes } from "@/components/floating-eyes"
 export const metadata: Metadata = {
   title: "Salem Cyber Vault - Cybersecurity Dashboard",
   description: "Halloween-themed cybersecurity monitoring dashboard",
+    generator: 'v0.dev'
 }
 
 export default function RootLayout({

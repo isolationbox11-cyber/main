@@ -59,7 +59,7 @@ If you see a 404 error after deploying:
 
 ## Development
 
-```bash
+\`\`\`bash
 # Install dependencies
 npm install
 
@@ -71,7 +71,7 @@ npm run build
 
 # Start production server
 npm start
-```
+\`\`\`
 
 ## Tech Stack
 
