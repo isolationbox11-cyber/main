@@ -1,0 +1,1 @@
+// Your TypeScript code for NVD API integration goes here.
