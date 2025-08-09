@@ -4,12 +4,14 @@ import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { CheckCircle, XCircle, AlertCircle, RefreshCw, Wifi, WifiOff } from "lucide-react"
-import { checkAPIHealth } from "@/lib/api-client"
+import { CheckCircle, XCircle, AlertCircle, RefreshCw, Wifi, WifiOff, Loader2 } from "lucide-react"
+import { checkAPIHealth, checkIndividualAPIHealth } from "@/lib/api-client"
 
 export function APIStatusIndicator() {
   const [apiStatus, setApiStatus] = useState<Record<string, boolean>>({})
   const [loading, setLoading] = useState(false)
+  const [individualLoading, setIndividualLoading] = useState<Record<string, boolean>>({})
+  const [individualErrors, setIndividualErrors] = useState<Record<string, string>>({})
   const [lastCheck, setLastCheck] = useState<Date | null>(null)
 
   const checkStatus = async () => {
@@ -18,10 +20,36 @@ export function APIStatusIndicator() {
       const status = await checkAPIHealth()
       setApiStatus(status)
       setLastCheck(new Date())
+      // Clear any individual errors when doing a full refresh
+      setIndividualErrors({})
     } catch (error) {
       console.error("Failed to check API status:", error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const checkIndividualStatus = async (apiKey: string) => {
+    // Set loading state for this specific API
+    setIndividualLoading(prev => ({ ...prev, [apiKey]: true }))
+    // Clear any previous error for this API
+    setIndividualErrors(prev => ({ ...prev, [apiKey]: '' }))
+
+    try {
+      const result = await checkIndividualAPIHealth(apiKey)
+      // Update only this API's status
+      setApiStatus(prev => ({ ...prev, [apiKey]: result.status }))
+      setLastCheck(new Date())
+    } catch (error) {
+      console.error(`Failed to check ${apiKey} status:`, error)
+      // Set error message for this specific API
+      setIndividualErrors(prev => ({ 
+        ...prev, 
+        [apiKey]: error instanceof Error ? error.message : 'Check failed' 
+      }))
+    } finally {
+      // Clear loading state for this specific API
+      setIndividualLoading(prev => ({ ...prev, [apiKey]: false }))
     }
   }
 
@@ -100,18 +128,49 @@ export function APIStatusIndicator() {
 
         {/* Individual API Status */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {apis.map((api) => (
-            <div key={api.key} className="p-3 bg-slate-800/30 rounded-lg border border-slate-700">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  {getStatusIcon(apiStatus[api.key])}
-                  <h4 className="font-medium text-white">{api.name}</h4>
+          {apis.map((api) => {
+            const isLoading = individualLoading[api.key]
+            const hasError = individualErrors[api.key]
+            const isOnline = apiStatus[api.key]
+            
+            return (
+              <button
+                key={api.key}
+                onClick={() => checkIndividualStatus(api.key)}
+                disabled={loading || isLoading}
+                className="p-3 bg-slate-800/30 rounded-lg border border-slate-700 hover:bg-slate-700/40 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-900 disabled:opacity-50 disabled:cursor-not-allowed text-left"
+                aria-label={`Check ${api.name} API status. Currently ${isOnline ? 'online' : 'offline'}`}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    {isLoading ? (
+                      <Loader2 className="w-4 h-4 text-cyan-400 animate-spin" />
+                    ) : (
+                      getStatusIcon(isOnline)
+                    )}
+                    <h4 className="font-medium text-white">{api.name}</h4>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {hasError && (
+                      <AlertCircle className="w-4 h-4 text-red-400" title={hasError} />
+                    )}
+                    {getStatusBadge(isOnline)}
+                  </div>
                 </div>
-                {getStatusBadge(apiStatus[api.key])}
-              </div>
-              <p className="text-sm text-slate-400">{api.description}</p>
-            </div>
-          ))}
+                <p className="text-sm text-slate-400">{api.description}</p>
+                {hasError && (
+                  <p className="text-xs text-red-400 mt-1 truncate" title={hasError}>
+                    Error: {hasError}
+                  </p>
+                )}
+                {isLoading && (
+                  <p className="text-xs text-cyan-400 mt-1">
+                    Checking status...
+                  </p>
+                )}
+              </button>
+            )
+          })}
         </div>
 
         {/* Configuration Help */}
