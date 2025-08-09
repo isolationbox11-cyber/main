@@ -562,24 +562,43 @@ function categorizeResult(link: string, snippet: string): string {
   return "General"
 }
 
-// API Health Check
+// API Health Check - All APIs
 export async function checkAPIHealth() {
-  const checks = {
-    shodan: false,
-    virustotal: false,
-    abuseipdb: false,
-    greynoise: false,
-    google: false,
-  }
-
   try {
-    // Test Shodan
-    const shodanResponse = await fetch(`https://api.shodan.io/api-info?key=${API_KEYS.SHODAN}`)
-    checks.shodan = shodanResponse.ok
+    const response = await fetch('/api/health')
+    if (!response.ok) {
+      throw new Error(`Health check failed: ${response.status}`)
+    }
+    const data = await response.json()
+    return data.apis
   } catch (error) {
-    console.warn("Shodan health check failed:", error)
+    console.error("Failed to check API health:", error)
+    // Return default offline state
+    return {
+      shodan: false,
+      virustotal: false,
+      abuseipdb: false,
+      greynoise: false,
+      google: false,
+    }
   }
+}
 
-  // Add other health checks as needed
-  return checks
+// API Health Check - Individual API
+export async function checkIndividualAPIHealth(apiName: string) {
+  try {
+    const response = await fetch(`/api/health?api=${encodeURIComponent(apiName)}`)
+    if (!response.ok) {
+      throw new Error(`Health check failed for ${apiName}: ${response.status}`)
+    }
+    const data = await response.json()
+    return {
+      api: data.api,
+      status: data.status,
+      timestamp: data.timestamp,
+    }
+  } catch (error) {
+    console.error(`Failed to check ${apiName} health:`, error)
+    throw error
+  }
 }
