@@ -84,7 +84,7 @@ export function WebcamGrid({ matches, onSelectIp }: WebcamGridProps) {
                     </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                    <p>View detailed information about this device on Shodan, a search engine for internet-connected devices.</p>
+                    <p><span className="font-bold">Shodan</span> is a search engine for internet-connected devices. Click to view detailed information about this device.</p>
                 </TooltipContent>
               </Tooltip>
             </div>

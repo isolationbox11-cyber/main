@@ -152,7 +152,7 @@ export function SearchResults({ results, query, displayMode, onFacetClick }: Sea
                                 </Button>
                             </TooltipTrigger>
                             <TooltipContent>
-                                <p>View detailed information about this device on Shodan, a search engine for internet-connected devices.</p>
+                                <p><span className="font-bold">Shodan</span> is a search engine for internet-connected devices. Click to view detailed information about this device.</p>
                             </TooltipContent>
                           </Tooltip>
                         </TableCell>
@@ -172,8 +172,7 @@ export function SearchResults({ results, query, displayMode, onFacetClick }: Sea
                                   className="w-24 h-auto rounded-md border object-cover"
                               />
                           ) : (
-                              // Render nothing if no screenshot
-                              null 
+                              <span className="text-muted-foreground text-sm">-</span> 
                           )}
                         </TableCell>
                       </TableRow>
