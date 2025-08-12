@@ -9,9 +9,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button"; // Import Button
 import { useQueries } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { ShieldCheck, ShieldAlert, Bot, FileScan } from "lucide-react";
+import { ShieldCheck, ShieldAlert, Bot, FileScan, ExternalLink } from "lucide-react"; // Import ExternalLink
 
 interface IPDetailsSheetProps {
   ip: string | null;
@@ -49,7 +50,7 @@ export function IPDetailsSheet({ ip, isOpen, onOpenChange }: IPDetailsSheetProps
 
   const [vtResult, abuseResult, greyNoiseResult, otxResult] = results;
 
-  const renderCard = (title: string, icon: React.ReactNode, result: typeof vtResult, content: React.ReactNode) => (
+  const renderCard = (title: string, icon: React.ReactNode, result: typeof vtResult, content: React.ReactNode, externalLink?: string) => (
     <Card className="bg-card/80">
         <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -62,6 +63,16 @@ export function IPDetailsSheet({ ip, isOpen, onOpenChange }: IPDetailsSheetProps
             {result.isError && <p className="text-destructive text-sm">Error: {result.error.message}</p>}
             {result.isSuccess && result.data && content}
             {result.isSuccess && !result.data && <p className="text-muted-foreground text-sm">No data available.</p>}
+            {externalLink && (
+                <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="mt-4 w-full"
+                    onClick={() => window.open(externalLink, '_blank', 'noopener noreferrer')}
+                >
+                    View on {title} <ExternalLink className="ml-2 h-4 w-4" />
+                </Button>
+            )}
         </CardContent>
     </Card>
   );
@@ -86,7 +97,8 @@ export function IPDetailsSheet({ ip, isOpen, onOpenChange }: IPDetailsSheetProps
                         </p>
                         <p className="text-xs text-muted-foreground pt-1">Based on analysis from over 70 security vendors.</p>
                     </div>
-                )
+                ),
+                ip ? `https://www.virustotal.com/gui/ip-address/${ip}` : undefined
             )}
             
             {renderCard("AbuseIPDB", <ShieldAlert className="text-red-500" />, abuseResult,
@@ -97,7 +109,8 @@ export function IPDetailsSheet({ ip, isOpen, onOpenChange }: IPDetailsSheetProps
                         <p className="text-xs text-muted-foreground pt-1">Score indicates the confidence that this IP is malicious, based on {abuseResult.data.data.totalReports.toLocaleString()} reports.</p>
                         <p>Country: {abuseResult.data.data.countryCode}</p>
                     </div>
-                )
+                ),
+                ip ? `https://www.abuseipdb.com/check/${ip}` : undefined
             )}
 
             {renderCard("GreyNoise", <Bot className="text-gray-500" />, greyNoiseResult,
@@ -108,7 +121,8 @@ export function IPDetailsSheet({ ip, isOpen, onOpenChange }: IPDetailsSheetProps
                         <p>Last Seen: {greyNoiseResult.data.last_seen ? new Date(greyNoiseResult.data.last_seen).toLocaleDateString() : "N/A"}</p>
                         <p className="text-xs text-muted-foreground pt-1">Identifies IPs that are part of mass-scanning activities.</p>
                     </div>
-                )
+                ),
+                ip ? `https://viz.greynoise.io/ip/${ip}` : undefined
             )}
 
             {renderCard("AlienVault OTX", <FileScan className="text-green-500" />, otxResult,
@@ -118,7 +132,8 @@ export function IPDetailsSheet({ ip, isOpen, onOpenChange }: IPDetailsSheetProps
                         <p className="text-xs text-muted-foreground pt-1">"Pulses" are collections of threat indicators from the OTX community.</p>
                         <p>Reputation: {otxResult.data.reputation?.reputation || "N/A"}</p>
                     </div>
-                )
+                ),
+                ip ? `https://otx.alienvault.com/indicator/ip/${ip}` : undefined
             )}
         </div>
       </SheetContent>

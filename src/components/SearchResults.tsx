@@ -18,7 +18,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { IPDetailsSheet } from "./IPDetailsSheet";
 import { getFlagEmoji } from "@/lib/utils";
-import { WebcamGrid } from "./WebcamGrid"; // Import the new WebcamGrid component
+import { WebcamGrid } from "./WebcamGrid";
+import { ImageOff, ExternalLink } from "lucide-react"; // Import ExternalLink icon
 
 interface ShodanMatch {
   ip_str: string;
@@ -138,6 +139,14 @@ export function SearchResults({ results, query, displayMode, onFacetClick }: Sea
                           {match.hostnames.length > 0 && (
                               <div className="text-xs text-muted-foreground">{match.hostnames.join(", ")}</div>
                           )}
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-auto p-0 text-xs mt-1 flex items-center gap-1"
+                            onClick={() => window.open(`https://www.shodan.io/host/${match.ip_str}`, '_blank', 'noopener noreferrer')}
+                          >
+                            View on Shodan <ExternalLink className="h-3 w-3" />
+                          </Button>
                         </TableCell>
                         <TableCell className="hidden md:table-cell">{match.org}</TableCell>
                         <TableCell className="hidden lg:table-cell">
@@ -148,12 +157,17 @@ export function SearchResults({ results, query, displayMode, onFacetClick }: Sea
                         <Badge variant="outline">{match.port}</Badge>
                         </TableCell>
                         <TableCell>
-                          {match.opts?.screenshot?.data && (
+                          {match.opts?.screenshot?.data ? (
                               <img
                                   src={`data:image/png;base64,${match.opts.screenshot.data}`}
                                   alt={`Screenshot of ${match.ip_str}`}
                                   className="w-24 h-auto rounded-md border object-cover"
                               />
+                          ) : (
+                              <div className="flex flex-col items-center justify-center text-muted-foreground text-xs w-24 h-auto">
+                                  <ImageOff className="h-6 w-6 mb-1" />
+                                  No Screenshot
+                              </div>
                           )}
                         </TableCell>
                       </TableRow>
