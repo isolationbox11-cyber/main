@@ -30,6 +30,11 @@ interface ShodanMatch {
     city: string | null;
   };
   data: string;
+  opts?: {
+    screenshot?: {
+      data: string; // Base64 encoded image data
+    };
+  };
 }
 
 interface SearchResultsProps {
@@ -69,6 +74,7 @@ export function SearchResults({ results, query }: SearchResultsProps) {
                   <TableHead className="hidden md:table-cell">ISP / Organization</TableHead>
                   <TableHead className="hidden lg:table-cell">Location</TableHead>
                   <TableHead>Open Ports</TableHead>
+                  <TableHead>Screenshot</TableHead> {/* New Table Head */}
                   </TableRow>
               </TableHeader>
               <TableBody>
@@ -89,6 +95,15 @@ export function SearchResults({ results, query }: SearchResultsProps) {
                       </TableCell>
                       <TableCell>
                       <Badge variant="outline">{match.port}</Badge>
+                      </TableCell>
+                      <TableCell> {/* New Table Cell for Screenshot */}
+                        {match.opts?.screenshot?.data && (
+                            <img
+                                src={`data:image/png;base64,${match.opts.screenshot.data}`}
+                                alt={`Screenshot of ${match.ip_str}`}
+                                className="w-24 h-auto rounded-md border object-cover"
+                            />
+                        )}
                       </TableCell>
                   </TableRow>
                   ))}
