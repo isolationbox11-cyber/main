@@ -8,6 +8,7 @@ import { supabase, supabaseError } from "@/lib/supabase";
 import { showError } from "@/utils/toast";
 import { SearchResults } from "@/components/SearchResults";
 import { SearchResultsSkeleton } from "@/components/SearchResultsSkeleton";
+import { ShodanLearningGuide } from "@/components/ShodanLearningGuide"; // Import the new component
 
 const quickSearches = [
     { label: "Webcams", query: "webcam", icon: <Webcam className="mr-2 h-4 w-4" /> },
@@ -97,6 +98,9 @@ const IntelligenceScanner = () => {
                     ))}
                 </CardContent>
             </Card>
+
+            {/* New Shodan Learning Guide */}
+            <ShodanLearningGuide />
 
             {apiError && (
                 <Card className="border-destructive/50 bg-destructive/10">
