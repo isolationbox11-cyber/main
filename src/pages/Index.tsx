@@ -2,9 +2,9 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Search, Server, Webcam, Database, Router, Shield } from "lucide-react";
+import { Search, Server, Webcam, Database, Router, Shield, AlertTriangle } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
-import { supabase } from "@/lib/supabase";
+import { supabase, supabaseError } from "@/lib/supabase";
 import { showError } from "@/utils/toast";
 import { SearchResults } from "@/components/SearchResults";
 import { SearchResultsSkeleton } from "@/components/SearchResultsSkeleton";
@@ -17,13 +17,14 @@ const quickSearches = [
     { label: "Vulnerable", query: "vuln:cve-2024", icon: <Shield className="mr-2 h-4 w-4" /> },
 ];
 
-const IntelligenceScannerPage = () => {
+const IntelligenceScanner = () => {
     const [query, setQuery] = useState("");
     const [submittedQuery, setSubmittedQuery] = useState("");
 
     const { mutate: search, data: searchResults, isPending: isLoading, isError } = useMutation({
         mutationFn: async (searchQuery: string) => {
-            const { data, error } = await supabase.functions.invoke("shodan-api", {
+            // supabase is guaranteed to be non-null here
+            const { data, error } = await supabase!.functions.invoke("shodan-api", {
                 body: { query: searchQuery },
             });
 
@@ -52,7 +53,7 @@ const IntelligenceScannerPage = () => {
 
     return (
         <div className="space-y-6">
-            <Card className="border-primary/50 bg-transparent backdrop-blur-sm">
+            <Card className="border-primary/50 bg-card/50 backdrop-blur-sm">
                 <CardHeader>
                     <CardTitle className="text-2xl text-primary drop-shadow-glow-primary">Intelligence Scanner</CardTitle>
                     <CardDescription>Discover devices and services across the digital landscape.</CardDescription>
@@ -75,7 +76,7 @@ const IntelligenceScannerPage = () => {
                     </form>
                 </CardContent>
             </Card>
-            <Card className="border-primary/50 bg-transparent backdrop-blur-sm">
+            <Card className="border-primary/50 bg-card/50 backdrop-blur-sm">
                 <CardHeader>
                     <CardTitle className="text-glow">Quick Searches</CardTitle>
                     <CardDescription>Use these presets to start exploring common queries.</CardDescription>
@@ -95,5 +96,40 @@ const IntelligenceScannerPage = () => {
         </div>
     );
 };
+
+const IntelligenceScannerPage = () => {
+    if (supabaseError) {
+        return (
+            <Card className="border-destructive/50 bg-destructive/10">
+                <CardHeader className="flex flex-row items-center gap-4">
+                    <AlertTriangle className="h-8 w-8 text-destructive" />
+                    <div>
+                        <CardTitle className="text-destructive">Configuration Error</CardTitle>
+                        <CardDescription className="text-destructive/80">
+                            {supabaseError}
+                        </CardDescription>
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                        Please create a <code className="bg-muted p-1 rounded-sm">.env.local</code> file in your project's root directory and add your Supabase keys:
+                    </p>
+                    <pre className="mt-2 p-4 bg-background/50 rounded-md text-sm overflow-x-auto">
+                        <code>
+                            VITE_SUPABASE_URL=https://your-project-id.supabase.co
+                            <br />
+                            VITE_SUPABASE_ANON_KEY=your-anon-key
+                        </code>
+                    </pre>
+                    <p className="mt-4 text-sm text-muted-foreground">
+                        After adding the keys, please click the <span className="font-bold">Rebuild</span> button above the chat window.
+                    </p>
+                </CardContent>
+            </Card>
+        );
+    }
+
+    return <IntelligenceScanner />;
+}
 
 export default IntelligenceScannerPage;
