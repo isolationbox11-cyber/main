@@ -62,6 +62,9 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        glow: {
+          DEFAULT: "hsl(var(--glow))",
+        }
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -90,6 +93,10 @@ export default {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      dropShadow: {
+        'glow-primary': '0 0 10px hsl(var(--primary) / 0.8)',
+        'glow-accent': '0 0 10px hsl(var(--glow) / 0.8)',
+      }
     },
   },
   plugins: [require("tailwindcss-animate")],

@@ -52,9 +52,9 @@ const IntelligenceScannerPage = () => {
 
     return (
         <div className="space-y-6">
-            <Card className="bg-card/50 backdrop-blur-sm">
+            <Card className="border-primary/50 bg-transparent backdrop-blur-sm">
                 <CardHeader>
-                    <CardTitle className="text-2xl">Intelligence Scanner</CardTitle>
+                    <CardTitle className="text-2xl text-primary drop-shadow-glow-primary">Intelligence Scanner</CardTitle>
                     <CardDescription>Discover devices and services across the digital landscape.</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -64,20 +64,20 @@ const IntelligenceScannerPage = () => {
                             <Input
                                 type="search"
                                 placeholder="Enter search query (e.g., apache, nginx, port:80, country:US)..."
-                                className="pl-10"
+                                className="pl-10 bg-background/50"
                                 value={query}
                                 onChange={(e) => setQuery(e.target.value)}
                             />
                         </div>
-                        <Button type="submit" disabled={isLoading}>
+                        <Button type="submit" disabled={isLoading} className="bg-primary text-primary-foreground hover:bg-primary/90 drop-shadow-glow-primary">
                             {isLoading ? "Searching..." : "Search"}
                         </Button>
                     </form>
                 </CardContent>
             </Card>
-            <Card className="bg-card/50 backdrop-blur-sm">
+            <Card className="border-primary/50 bg-transparent backdrop-blur-sm">
                 <CardHeader>
-                    <CardTitle>Quick Searches</CardTitle>
+                    <CardTitle className="text-glow">Quick Searches</CardTitle>
                     <CardDescription>Use these presets to start exploring common queries.</CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-wrap gap-2">
