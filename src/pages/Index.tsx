@@ -78,7 +78,7 @@ const IntelligenceScanner = () => {
             </Card>
             <Card className="border-primary/50 bg-card/50 backdrop-blur-sm">
                 <CardHeader>
-                    <CardTitle className="text-glow">Quick Searches</CardTitle>
+                    <CardTitle className="text-glow drop-shadow-glow-accent">Quick Searches</CardTitle>
                     <CardDescription>Use these presets to start exploring common queries.</CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-wrap gap-2">
