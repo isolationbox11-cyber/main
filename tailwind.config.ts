@@ -88,14 +88,23 @@ export default {
             height: "0",
           },
         },
+        float: {
+          from: {
+            transform: 'translateY(0) rotate(0deg)',
+          },
+          to: {
+            transform: 'translateY(-120vh) rotate(360deg)',
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        float: 'float linear infinite',
       },
       dropShadow: {
-        'glow-primary': '0 0 10px hsl(var(--primary) / 0.8)',
-        'glow-accent': '0 0 10px hsl(var(--glow) / 0.8)',
+        'glow-primary': '0 0 8px hsl(var(--primary) / 0.6)',
+        'glow-accent': '0 0 8px hsl(var(--glow) / 0.6)',
       }
     },
   },

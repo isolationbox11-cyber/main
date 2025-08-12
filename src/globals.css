@@ -60,8 +60,8 @@
     @apply bg-background text-foreground;
     background-color: hsl(var(--background));
     background-image:  
-      radial-gradient(hsl(var(--glow) / 0.15) 1px, transparent 1px),
-      radial-gradient(hsl(var(--glow) / 0.15) 1px, transparent 1px);
+      radial-gradient(hsl(var(--glow) / 0.08) 1px, transparent 1px),
+      radial-gradient(hsl(var(--glow) / 0.08) 1px, transparent 1px);
     background-size: 40px 40px;
     background-position: 0 0, 20px 20px;
   }

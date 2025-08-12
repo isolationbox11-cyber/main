@@ -20,11 +20,14 @@ const quickSearches = [
 const IntelligenceScanner = () => {
     const [query, setQuery] = useState("");
     const [submittedQuery, setSubmittedQuery] = useState("");
+    const [apiError, setApiError] = useState<string | null>(null);
 
-    const { mutate: search, data: searchResults, isPending: isLoading, isError } = useMutation({
+    const { mutate: search, data: searchResults, isPending: isLoading } = useMutation({
         mutationFn: async (searchQuery: string) => {
-            // supabase is guaranteed to be non-null here
-            const { data, error } = await supabase!.functions.invoke("shodan-api", {
+            setApiError(null);
+            if (!supabase) throw new Error("Supabase client not initialized.");
+            
+            const { data, error } = await supabase.functions.invoke("shodan-api", {
                 body: { query: searchQuery },
             });
 
@@ -34,7 +37,11 @@ const IntelligenceScanner = () => {
             return data;
         },
         onError: (error) => {
-            showError(`Search failed: ${error.message}`);
+            const errorMessage = (error as Error).message;
+            showError(`Search failed: ${errorMessage}`);
+            if (errorMessage.toLowerCase().includes("api key")) {
+                setApiError(errorMessage);
+            }
         },
     });
 
@@ -91,8 +98,37 @@ const IntelligenceScanner = () => {
                 </CardContent>
             </Card>
 
+            {apiError && (
+                <Card className="border-destructive/50 bg-destructive/10">
+                    <CardHeader className="flex flex-row items-center gap-4">
+                        <AlertTriangle className="h-8 w-8 text-destructive" />
+                        <div>
+                            <CardTitle className="text-destructive">API Key Error</CardTitle>
+                            <CardDescription className="text-destructive/80">
+                                Your search failed because a server-side API key is missing.
+                            </CardDescription>
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-sm text-muted-foreground">
+                            The server reported: <code className="bg-muted px-1 py-0.5 rounded-sm text-destructive/80">{apiError}</code>
+                        </p>
+                        <p className="mt-4 text-sm text-muted-foreground">
+                            To fix this, you need to add the required API key as a secret in your Supabase project. The scanner uses multiple services (Shodan, VirusTotal, etc.), each requiring its own key.
+                        </p>
+                        <Button 
+                            variant="destructive" 
+                            className="mt-4"
+                            onClick={() => window.open('https://supabase.com/dashboard/project/vkzpryeptgasbhbuortc/settings/functions', '_blank')}
+                        >
+                            Add API Keys in Supabase
+                        </Button>
+                    </CardContent>
+                </Card>
+            )}
+
             {isLoading && <SearchResultsSkeleton />}
-            {searchResults && !isLoading && !isError && <SearchResults results={searchResults} query={submittedQuery} />}
+            {searchResults && !isLoading && !apiError && <SearchResults results={searchResults} query={submittedQuery} />}
         </div>
     );
 };
