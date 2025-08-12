@@ -8,20 +8,21 @@ import { supabase, supabaseError } from "@/lib/supabase";
 import { showError } from "@/utils/toast";
 import { SearchResults } from "@/components/SearchResults";
 import { SearchResultsSkeleton } from "@/components/SearchResultsSkeleton";
-import { ShodanLearningGuide } from "@/components/ShodanLearningGuide"; // Import the new component
+import { ShodanLearningGuide } from "@/components/ShodanLearningGuide";
 
 const quickSearches = [
-    { label: "Webcams", query: "webcam", icon: <Webcam className="mr-2 h-4 w-4" /> },
-    { label: "SSH Servers", query: "port:22", icon: <Server className="mr-2 h-4 w-4" /> },
-    { label: "Databases", query: "product:mongodb", icon: <Database className="mr-2 h-4 w-4" /> },
-    { label: "Routers", query: "device:router", icon: <Router className="mr-2 h-4 w-4" /> },
-    { label: "Vulnerable", query: "vuln:cve-2024", icon: <Shield className="mr-2 h-4 w-4" /> },
+    { label: "Webcams", query: "webcam has_screenshot:true", icon: <Webcam className="mr-2 h-4 w-4" />, displayMode: "grid" as const },
+    { label: "SSH Servers", query: "port:22", icon: <Server className="mr-2 h-4 w-4" />, displayMode: "table" as const },
+    { label: "Databases", query: "product:mongodb", icon: <Database className="mr-2 h-4 w-4" />, displayMode: "table" as const },
+    { label: "Routers", query: "device:router", icon: <Router className="mr-2 h-4 w-4" />, displayMode: "table" as const },
+    { label: "Vulnerable", query: "vuln:cve-2024", icon: <Shield className="mr-2 h-4 w-4" />, displayMode: "table" as const },
 ];
 
 const IntelligenceScanner = () => {
     const [query, setQuery] = useState("");
     const [submittedQuery, setSubmittedQuery] = useState("");
     const [apiError, setApiError] = useState<string | null>(null);
+    const [currentDisplayMode, setCurrentDisplayMode] = useState<"table" | "grid">("table");
 
     const { mutate: search, data: searchResults, isPending: isLoading } = useMutation({
         mutationFn: async (searchQuery: string) => {
@@ -50,13 +51,23 @@ const IntelligenceScanner = () => {
         if (e) e.preventDefault();
         if (!query.trim()) return;
         setSubmittedQuery(query);
+        setCurrentDisplayMode("table"); // Default to table for manual searches
         search(query);
     };
 
-    const handleQuickSearch = (searchQuery: string) => {
-        setQuery(searchQuery);
-        setSubmittedQuery(searchQuery);
-        search(searchQuery);
+    const handleQuickSearch = (item: typeof quickSearches[0]) => {
+        setQuery(item.query);
+        setSubmittedQuery(item.query);
+        setCurrentDisplayMode(item.displayMode);
+        search(item.query);
+    };
+
+    const handleFacetClick = (facetType: string, value: string) => {
+        const newQuery = `${submittedQuery} ${facetType}:${value}`;
+        setQuery(newQuery);
+        setSubmittedQuery(newQuery);
+        setCurrentDisplayMode("table"); // Reset to table when applying facets
+        search(newQuery);
     };
 
     return (
@@ -91,7 +102,7 @@ const IntelligenceScanner = () => {
                 </CardHeader>
                 <CardContent className="flex flex-wrap gap-2">
                     {quickSearches.map(item => (
-                        <Button key={item.label} variant="secondary" onClick={() => handleQuickSearch(item.query)} disabled={isLoading}>
+                        <Button key={item.label} variant="secondary" onClick={() => handleQuickSearch(item)} disabled={isLoading}>
                             {item.icon}
                             {item.label}
                         </Button>
@@ -99,7 +110,6 @@ const IntelligenceScanner = () => {
                 </CardContent>
             </Card>
 
-            {/* New Shodan Learning Guide */}
             <ShodanLearningGuide />
 
             {apiError && (
@@ -132,7 +142,14 @@ const IntelligenceScanner = () => {
             )}
 
             {isLoading && <SearchResultsSkeleton />}
-            {searchResults && !isLoading && !apiError && <SearchResults results={searchResults} query={submittedQuery} />}
+            {searchResults && !isLoading && !apiError && (
+                <SearchResults 
+                    results={searchResults} 
+                    query={submittedQuery} 
+                    displayMode={currentDisplayMode}
+                    onFacetClick={handleFacetClick}
+                />
+            )}
         </div>
     );
 };
