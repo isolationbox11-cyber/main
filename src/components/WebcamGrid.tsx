@@ -62,6 +62,14 @@ export function WebcamGrid({ matches, onSelectIp }: WebcamGridProps) {
                 >
                   View Details
                 </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full mt-2"
+                  onClick={() => window.open(`https://www.shodan.io/host/${match.ip_str}`, '_blank', 'noopener noreferrer')}
+                >
+                  View on Shodan
+                </Button>
               </div>
             )}
           </div>
@@ -75,6 +83,16 @@ export function WebcamGrid({ matches, onSelectIp }: WebcamGridProps) {
               {match.location.country_name}{match.location.city ? `, ${match.location.city}` : ''}
             </div>
             <div className="text-xs text-muted-foreground">{match.org}</div>
+            {match.opts?.screenshot?.data && ( // Only show this button if a screenshot is present, as the other button is in the no-screenshot block
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full mt-2"
+                onClick={() => window.open(`https://www.shodan.io/host/${match.ip_str}`, '_blank', 'noopener noreferrer')}
+              >
+                View on Shodan
+              </Button>
+            )}
           </CardContent>
         </Card>
       ))}
