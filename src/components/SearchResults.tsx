@@ -16,10 +16,10 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { IPDetailsSheet } from "./IPDetailsSheet";
 import { getFlagEmoji } from "@/lib/utils";
 import { WebcamGrid } from "./WebcamGrid";
-import { ExternalLink } from "lucide-react"; // Removed ImageOff as it's no longer needed for placeholder
+import { ExternalLink } from "lucide-react";
+import { IPDetailsPanel } from "./IPDetailsPanel"; // Import the new IPDetailsPanel
 
 interface ShodanMatch {
   ip_str: string;
@@ -179,13 +179,9 @@ export function SearchResults({ results, query, displayMode, onFacetClick }: Sea
           </CardContent>
         </Card>
       </div>
-      <IPDetailsSheet 
-        ip={selectedIp} 
-        isOpen={!!selectedIp} 
-        onOpenChange={(isOpen) => {
-            if (!isOpen) setSelectedIp(null);
-        }} 
-      />
+      {selectedIp && (
+        <IPDetailsPanel ip={selectedIp} onClose={() => setSelectedIp(null)} />
+      )}
     </>
   );
 }
