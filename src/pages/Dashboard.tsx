@@ -7,7 +7,7 @@ const tools = [
     title: "Intelligence Scanner",
     description: "Discover internet-connected devices and services using Shodan.",
     icon: <Search className="h-8 w-8 text-primary" />,
-    href: "/",
+    href: "/search",
   },
   {
     title: "Threat Intel Search",
@@ -17,8 +17,8 @@ const tools = [
   },
   {
     title: "Vulnerability Analysis",
-    description: "Track and analyze known vulnerabilities (CVEs). (Coming Soon)",
-    icon: <Shield className="h-8 w-8 text-muted-foreground" />,
+    description: "Track and analyze known vulnerabilities (CVEs).",
+    icon: <Shield className="h-8 w-8 text-primary" />,
     href: "/vulnerabilities",
   },
     {

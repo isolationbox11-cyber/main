@@ -1,7 +1,7 @@
 "use client";
 
 import { Link, useLocation } from "react-router-dom";
-import { Package2, Home, Search, ShieldAlert, Bot, Code, Settings, BarChart, Globe } from "lucide-react";
+import { Package2, Home, Search, ShieldAlert, Bot, Code, Settings, BarChart, Globe, Shield } from "lucide-react"; // Added Shield icon
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
@@ -10,8 +10,10 @@ import { useState } from "react";
 
 const navItems = [
   { name: "Overview", href: "/", icon: Home },
-  { name: "Search", href: "/search", icon: Search },
-  { name: "Threats", href: "/threats", icon: ShieldAlert },
+  { name: "Intelligence Scanner", href: "/search", icon: Search }, // Renamed from 'Search'
+  { name: "Threat Intel Search", href: "/threat-intel-search", icon: Globe }, // Added Threat Intel Search
+  { name: "Vulnerability Analysis", href: "/vulnerabilities", icon: Shield }, // New item
+  { name: "Threat Monitoring", href: "/threats", icon: ShieldAlert }, // Renamed from 'Threats'
   { name: "Botnets", href: "/botnets", icon: Bot },
   { name: "Dorks", href: "/dorks", icon: Code },
   { name: "Advanced", href: "/advanced", icon: BarChart },
