@@ -18,7 +18,7 @@ const fetchIpIntel = async (service: string, ip: string) => {
     body: { ip },
   });
   if (error) throw new Error(`${service}: ${error.message}`);
-  if (data.error) throw new Error(`${service}: ${data.error}`);
+  if (data.error) throw new Error(`${service}: data.error`);
   return data;
 };
 
@@ -84,6 +84,9 @@ export function IPDetailsPanel({ ip, onClose }: IPDetailsPanelProps) {
             </Button>
         </CardHeader>
         <CardContent>
+            <p className="text-sm text-muted-foreground mb-4">
+                This report compiles information from various leading threat intelligence APIs to provide a comprehensive view of the IP address's reputation and activity.
+            </p>
             <div className="grid gap-4 py-4">
                 {renderCard("VirusTotal", <ShieldCheck className="text-blue-500" />, vtResult,
                     vtResult.data && (
