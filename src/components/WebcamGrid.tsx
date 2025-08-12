@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { getFlagEmoji } from "@/lib/utils";
+import { ImageOff } from "lucide-react"; // Import a placeholder icon
 
 interface ShodanMatch {
   ip_str: string;
@@ -30,25 +31,40 @@ export function WebcamGrid({ matches, onSelectIp }: WebcamGridProps) {
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {matches.map((match) => (
         <Card key={match.ip_str + match.port} className="bg-card/50 backdrop-blur-sm overflow-hidden group">
-          {match.opts?.screenshot?.data && (
-            <div className="relative w-full h-48 overflow-hidden">
-              <img
-                src={`data:image/png;base64,${match.opts.screenshot.data}`}
-                alt={`Screenshot of ${match.ip_str}`}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+          <div className="relative w-full h-48 overflow-hidden bg-muted flex items-center justify-center text-muted-foreground">
+            {match.opts?.screenshot?.data ? (
+              <>
+                <img
+                  src={`data:image/png;base64,${match.opts.screenshot.data}`}
+                  alt={`Screenshot of ${match.ip_str}`}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => onSelectIp(match.ip_str)}
+                    className="w-full"
+                  >
+                    View Details
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <div className="flex flex-col items-center justify-center text-center p-4">
+                <ImageOff className="h-12 w-12 mb-2" />
+                <span className="text-sm">No Screenshot Available</span>
                 <Button
                   variant="secondary"
                   size="sm"
                   onClick={() => onSelectIp(match.ip_str)}
-                  className="w-full"
+                  className="w-full mt-3"
                 >
                   View Details
                 </Button>
               </div>
-            </div>
-          )}
+            )}
+          </div>
           <CardContent className="p-3 text-sm">
             <div className="font-semibold text-primary">{match.ip_str}</div>
             {match.hostnames.length > 0 && (
