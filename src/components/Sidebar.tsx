@@ -14,7 +14,7 @@ export function Sidebar() {
   return (
     <aside className="hidden w-64 flex-shrink-0 border-r border-primary/20 bg-background/80 backdrop-blur-sm md:flex md:flex-col">
       <div className="flex h-14 items-center border-b border-primary/20 px-4 lg:h-[60px] lg:px-6">
-        <NavLink to="/" className="flex items-center gap-2 font-semibold text-primary drop-shadow-glow-primary">
+        <NavLink to="/" className="flex items-center gap-2 font-semibold text-primary">
           <Eye className="h-6 w-6" />
           <span>Salem Cyber Vault</span>
         </NavLink>
@@ -27,8 +27,8 @@ export function Sidebar() {
             end={item.href === "/"}
             className={({ isActive }) =>
               cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary hover:drop-shadow-glow-primary",
-                isActive && "bg-accent text-primary drop-shadow-glow-primary"
+                "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
+                isActive && "bg-accent text-primary"
               )
             }
           >

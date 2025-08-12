@@ -62,7 +62,7 @@ const IntelligenceScanner = () => {
         <div className="space-y-6">
             <Card className="border-primary/50 bg-card/50 backdrop-blur-sm">
                 <CardHeader>
-                    <CardTitle className="text-2xl text-primary drop-shadow-glow-primary">Intelligence Scanner</CardTitle>
+                    <CardTitle className="text-2xl text-primary">Intelligence Scanner</CardTitle>
                     <CardDescription>Discover devices and services across the digital landscape.</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -77,7 +77,7 @@ const IntelligenceScanner = () => {
                                 onChange={(e) => setQuery(e.target.value)}
                             />
                         </div>
-                        <Button type="submit" disabled={isLoading} className="bg-primary text-primary-foreground hover:bg-primary/90 drop-shadow-glow-primary">
+                        <Button type="submit" disabled={isLoading} className="bg-primary text-primary-foreground hover:bg-primary/90">
                             {isLoading ? "Searching..." : "Search"}
                         </Button>
                     </form>
@@ -85,7 +85,7 @@ const IntelligenceScanner = () => {
             </Card>
             <Card className="border-primary/50 bg-card/50 backdrop-blur-sm">
                 <CardHeader>
-                    <CardTitle className="text-glow drop-shadow-glow-accent">Quick Searches</CardTitle>
+                    <CardTitle>Quick Searches</CardTitle>
                     <CardDescription>Use these presets to start exploring common queries.</CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-wrap gap-2">
