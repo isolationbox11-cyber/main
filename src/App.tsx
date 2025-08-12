@@ -1,12 +1,12 @@
 import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } "@/components/ui/sonner";
+import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import IntelligenceScannerPage from "./pages/IntelligenceScannerPage";
 import OverviewPage from "./pages/OverviewPage";
 import ThreatIntelSearchPage from "./pages/ThreatIntelSearch";
-import VulnerabilityAnalysisPage from "./pages/VulnerabilityAnalysisPage"; // New import
+import VulnerabilityAnalysisPage from "./pages/VulnerabilityAnalysisPage";
 import NotFound from "./pages/NotFound";
 import MainLayout from "./components/MainLayout";
 
@@ -29,7 +29,7 @@ const App = () => (
             <Route path="/" element={<MainLayout><OverviewPage /></MainLayout>} />
             <Route path="/search" element={<MainLayout><IntelligenceScannerPage /></MainLayout>} />
             <Route path="/threat-intel-search" element={<MainLayout><ThreatIntelSearchPage /></MainLayout>} />
-            <Route path="/vulnerabilities" element={<MainLayout><VulnerabilityAnalysisPage /></MainLayout>} /> {/* New route */}
+            <Route path="/vulnerabilities" element={<MainLayout><VulnerabilityAnalysisPage /></MainLayout>} />
             <Route path="/threats" element={<MainLayout><PlaceholderPage title="Threats" /></MainLayout>} />
             <Route path="/botnets" element={<MainLayout><PlaceholderPage title="Botnets" /></MainLayout>} />
             <Route path="/dorks" element={<MainLayout><PlaceholderPage title="Dorks" /></MainLayout>} />
