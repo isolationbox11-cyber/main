@@ -1,132 +1,54 @@
-import { Header } from "@/components/Header";
-import { Sidebar } from "@/components/Sidebar";
-import { StatCard } from "@/components/StatCard";
-import { RecentActivity } from "@/components/RecentActivity";
-import { AlertTriangle, ShieldCheck, Bug, Globe } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/lib/supabase";
-import { showError } from "@/utils/toast";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Search, Server, Webcam, Database, Router, Shield } from "lucide-react";
 
-interface ShodanData {
-  total: number;
-  matches: {
-    ip_str: string;
-    org: string;
-    port: number;
-    timestamp: string;
-  }[];
-  facets: {
-    country: Record<string, number>;
-    org: Record<string, number>;
-  };
-}
+const quickSearches = [
+    { label: "Webcams", query: "webcam", icon: <Webcam className="mr-2 h-4 w-4" /> },
+    { label: "SSH Servers", query: "port:22", icon: <Server className="mr-2 h-4 w-4" /> },
+    { label: "Databases", query: "product:mongodb", icon: <Database className="mr-2 h-4 w-4" /> },
+    { label: "Routers", query: "device:router", icon: <Router className="mr-2 h-4 w-4" /> },
+    { label: "Vulnerable", query: "vuln:cve-2024", icon: <Shield className="mr-2 h-4 w-4" /> },
+]
 
-const fetchShodanData = async (): Promise<ShodanData> => {
-  const { data, error } = await supabase.functions.invoke('shodan-api', {
-    body: { query: 'product:nginx' },
-  });
-
-  if (error) {
-    showError(`Error fetching data: ${error.message}`);
-    throw new Error(error.message);
-  }
-  
-  if (data.error) {
-    showError(`API Error: ${data.error}`);
-    throw new Error(data.error);
-  }
-
-  return data;
-};
-
-const DashboardPage = () => {
-  const { data, isLoading, isError } = useQuery<ShodanData>({
-    queryKey: ['shodanData'],
-    queryFn: fetchShodanData,
-    retry: false,
-  });
-
-  const recentActivities = data?.matches.map(match => ({
-    name: match.ip_str,
-    email: match.org,
-    action: `Port ${match.port}`,
-    time: new Date(match.timestamp).toLocaleTimeString(),
-  })).slice(0, 5);
-
+const IntelligenceScannerPage = () => {
   return (
-    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
-      <Sidebar />
-      <div className="flex flex-col">
-        <Header />
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <StatCard
-              title="Total Results"
-              icon={<AlertTriangle className="h-4 w-4 text-muted-foreground" />}
-              isLoading={isLoading}
-              value={data?.total.toLocaleString()}
-              change="Based on 'product:nginx' query"
-            />
-            <StatCard
-              title="Affected Organizations"
-              icon={<ShieldCheck className="h-4 w-4 text-muted-foreground" />}
-              isLoading={isLoading}
-              value={data?.facets?.org ? Object.keys(data.facets.org).length.toString() : undefined}
-              change="Unique organizations found"
-            />
-            <StatCard
-              title="Affected Countries"
-              icon={<Globe className="h-4 w-4 text-muted-foreground" />}
-              isLoading={isLoading}
-              value={data?.facets?.country ? Object.keys(data.facets.country).length.toString() : undefined}
-              change="Unique countries found"
-            />
-            <StatCard
-              title="Avg. Vulns per Org"
-              icon={<Bug className="h-4 w-4 text-muted-foreground" />}
-              isLoading={isLoading}
-              value={data && data.facets?.org ? (data.total / Object.keys(data.facets.org).length).toFixed(2) : undefined}
-              change="Average hosts per organization"
-            />
-          </div>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-            <div className="lg:col-span-4">
-              <RecentActivity isLoading={isLoading} activities={recentActivities} />
-            </div>
-            <div className="lg:col-span-3">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>System Status</CardTitle>
-                        <CardDescription>API Connection Status</CardDescription>
-                    </CardHeader>
-                    <CardContent className="grid gap-4">
-                        {isLoading && (
-                            <div className="flex items-center justify-between font-medium">
-                                <span>Shodan API</span>
-                                <span className="text-yellow-500">Connecting...</span>
-                            </div>
-                        )}
-                        {isError && (
-                             <div className="flex items-center justify-between font-medium">
-                                <span>Shodan API</span>
-                                <span className="text-red-500">Connection Failed</span>
-                            </div>
-                        )}
-                        {data && !isError && (
-                             <div className="flex items-center justify-between font-medium">
-                                <span>Shodan API</span>
-                                <span className="text-green-500">Connected</span>
-                            </div>
-                        )}
-                    </CardContent>
-                </Card>
-            </div>
-          </div>
-        </main>
-      </div>
+    <div className="space-y-6">
+        <Card className="bg-card/50 backdrop-blur-sm">
+            <CardHeader>
+                <CardTitle className="text-2xl">Intelligence Scanner</CardTitle>
+                <CardDescription>Discover devices and services across the digital landscape.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div className="flex w-full items-center space-x-2">
+                    <div className="relative flex-1">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                        <Input 
+                            type="search" 
+                            placeholder="Enter search query (e.g., apache, nginx, port:80, country:US)..." 
+                            className="pl-10"
+                        />
+                    </div>
+                    <Button type="submit">Search</Button>
+                </div>
+            </CardContent>
+        </Card>
+        <Card className="bg-card/50 backdrop-blur-sm">
+            <CardHeader>
+                <CardTitle>Quick Searches</CardTitle>
+                <CardDescription>Use these presets to start exploring common queries.</CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-wrap gap-2">
+                {quickSearches.map(item => (
+                    <Button key={item.label} variant="secondary">
+                        {item.icon}
+                        {item.label}
+                    </Button>
+                ))}
+            </CardContent>
+        </Card>
     </div>
   );
 };
 
-export default DashboardPage;
+export default IntelligenceScannerPage;
