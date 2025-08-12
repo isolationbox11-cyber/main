@@ -33,43 +33,15 @@ export function WebcamGrid({ matches, onSelectIp }: WebcamGridProps) {
         <Card key={match.ip_str + match.port} className="bg-card/50 backdrop-blur-sm overflow-hidden group">
           <div className="relative w-full h-48 overflow-hidden bg-muted flex items-center justify-center text-muted-foreground">
             {match.opts?.screenshot?.data ? (
-              <>
-                <img
-                  src={`data:image/png;base64,${match.opts.screenshot.data}`}
-                  alt={`Screenshot of ${match.ip_str}`}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => onSelectIp(match.ip_str)}
-                    className="w-full"
-                  >
-                    View Details
-                  </Button>
-                </div>
-              </>
+              <img
+                src={`data:image/png;base64,${match.opts.screenshot.data}`}
+                alt={`Screenshot of ${match.ip_str}`}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
             ) : (
               <div className="flex flex-col items-center justify-center text-center p-4">
                 <ImageOff className="h-12 w-12 mb-2" />
                 <span className="text-sm">No Screenshot Available</span>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => onSelectIp(match.ip_str)}
-                  className="w-full mt-3"
-                >
-                  View Details
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full mt-2"
-                  onClick={() => window.open(`https://www.shodan.io/host/${match.ip_str}`, '_blank', 'noopener noreferrer')}
-                >
-                  View on Shodan
-                </Button>
               </div>
             )}
           </div>
@@ -83,16 +55,25 @@ export function WebcamGrid({ matches, onSelectIp }: WebcamGridProps) {
               {match.location.country_name}{match.location.city ? `, ${match.location.city}` : ''}
             </div>
             <div className="text-xs text-muted-foreground">{match.org}</div>
-            {match.opts?.screenshot?.data && ( // Only show this button if a screenshot is present, as the other button is in the no-screenshot block
+
+            <div className="mt-3 space-y-2">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => onSelectIp(match.ip_str)}
+                className="w-full"
+              >
+                View Details
+              </Button>
               <Button
                 variant="outline"
                 size="sm"
-                className="w-full mt-2"
+                className="w-full"
                 onClick={() => window.open(`https://www.shodan.io/host/${match.ip_str}`, '_blank', 'noopener noreferrer')}
               >
                 View on Shodan
               </Button>
-            )}
+            </div>
           </CardContent>
         </Card>
       ))}
