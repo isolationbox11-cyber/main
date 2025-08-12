@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import DashboardPage from "./pages/Dashboard";
+import ThreatIntelSearchPage from "./pages/ThreatIntelSearch";
 import NotFound from "./pages/NotFound";
 import { Sidebar } from "./components/Sidebar";
 import { Header } from "./components/Header";
@@ -43,6 +44,7 @@ const App = () => (
         <Routes>
             <Route path="/" element={<MainLayout><Index /></MainLayout>} />
             <Route path="/dashboard" element={<MainLayout><DashboardPage /></MainLayout>} />
+            <Route path="/threat-intel-search" element={<MainLayout><ThreatIntelSearchPage /></MainLayout>} />
             <Route path="/vulnerabilities" element={<MainLayout><PlaceholderPage title="Vulnerabilities" /></MainLayout>} />
             <Route path="/threats" element={<MainLayout><PlaceholderPage title="Threats" /></MainLayout>} />
             <Route path="/settings" element={<MainLayout><PlaceholderPage title="Settings" /></MainLayout>} />

@@ -13,10 +13,11 @@ serve(async (req) => {
 
   try {
     const { query } = await req.json();
-    const apiKey = Deno.env.get("SHODAN_API_KEY");
+    const apiKey = Deno.env.get("GOOGLE_API_KEY");
+    const cseId = Deno.env.get("GOOGLE_CSE_ID");
 
-    if (!apiKey) {
-      throw new Error("Shodan API key not found in environment variables.");
+    if (!apiKey || !cseId) {
+      throw new Error("Google API Key or CSE ID not found in environment variables.");
     }
     
     if (!query) {
@@ -26,16 +27,16 @@ serve(async (req) => {
         });
     }
 
-    const shodanUrl = `https://api.shodan.io/shodan/host/search?key=${apiKey}&query=${encodeURIComponent(query)}&facets=country,org`;
-    const shodanRes = await fetch(shodanUrl);
+    const googleApiUrl = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cseId}&q=${encodeURIComponent(query)}`;
+    const apiRes = await fetch(googleApiUrl);
 
-    if (!shodanRes.ok) {
-      const errorText = await shodanRes.text();
-      console.error("Shodan API error:", errorText);
-      throw new Error(`Shodan API request failed with status: ${shodanRes.status}`);
+    if (!apiRes.ok) {
+      const errorText = await apiRes.text();
+      console.error("Google Search API error:", errorText);
+      throw new Error(`Google Search API request failed with status: ${apiRes.status}`);
     }
 
-    const data = await shodanRes.json();
+    const data = await apiRes.json();
 
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

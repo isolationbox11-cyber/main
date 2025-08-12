@@ -1,10 +1,11 @@
-import { Eye, Home, Settings, Shield, Search, AlertTriangle } from "lucide-react";
+import { Eye, Home, Settings, Shield, Search, AlertTriangle, Globe } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/dashboard", icon: Home, label: "Dashboard" },
   { href: "/", icon: Search, label: "Intelligence Scanner" },
+  { href: "/threat-intel-search", icon: Globe, label: "Threat Intel Search" },
   { href: "/vulnerabilities", icon: Shield, label: "Vulnerabilities" },
   { href: "/threats", icon: AlertTriangle, label: "Threats" },
   { href: "/settings", icon: Settings, label: "Settings" },

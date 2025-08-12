@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "lib": ["esnext"],
+    "types": [
+      "https://deno.land/x/service_worker@0.1.0/lib.d.ts"
+    ]
+  },
+  "include": [
+    "./**/*.ts"
+  ]
+}
