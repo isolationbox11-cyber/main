@@ -19,7 +19,8 @@ import { Button } from "@/components/ui/button";
 import { getFlagEmoji } from "@/lib/utils";
 import { WebcamGrid } from "./WebcamGrid";
 import { ExternalLink } from "lucide-react";
-import { IPDetailsPanel } from "./IPDetailsPanel"; // Import the new IPDetailsPanel
+import { IPDetailsPanel } from "./IPDetailsPanel";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface ShodanMatch {
   ip_str: string;
@@ -139,14 +140,21 @@ export function SearchResults({ results, query, displayMode, onFacetClick }: Sea
                           {match.hostnames.length > 0 && (
                               <div className="text-xs text-muted-foreground">{match.hostnames.join(", ")}</div>
                           )}
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="h-auto p-0 text-xs mt-1 flex items-center gap-1"
-                            onClick={() => window.open(`https://www.shodan.io/host/${match.ip_str}`, '_blank', 'noopener noreferrer')}
-                          >
-                            View on Shodan <ExternalLink className="h-3 w-3" />
-                          </Button>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="h-auto p-0 text-xs mt-1 flex items-center gap-1"
+                                    onClick={() => window.open(`https://www.shodan.io/host/${match.ip_str}`, '_blank', 'noopener noreferrer')}
+                                >
+                                    View on Shodan <ExternalLink className="h-3 w-3" />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>View detailed information about this device on Shodan, a search engine for internet-connected devices.</p>
+                            </TooltipContent>
+                          </Tooltip>
                         </TableCell>
                         <TableCell className="hidden md:table-cell">{match.org}</TableCell>
                         <TableCell className="hidden lg:table-cell">
@@ -165,7 +173,7 @@ export function SearchResults({ results, query, displayMode, onFacetClick }: Sea
                               />
                           ) : (
                               // Render nothing if no screenshot
-                              <div className="w-24 h-auto"></div> 
+                              null 
                           )}
                         </TableCell>
                       </TableRow>

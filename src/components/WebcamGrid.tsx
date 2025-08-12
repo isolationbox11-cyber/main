@@ -1,7 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { getFlagEmoji } from "@/lib/utils";
-// Removed ImageOff as it's no longer needed for placeholder
+import { ExternalLink } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface ShodanMatch {
   ip_str: string;
@@ -27,21 +28,29 @@ interface WebcamGridProps {
 }
 
 export function WebcamGrid({ matches, onSelectIp }: WebcamGridProps) {
+  // Filter out matches that do not have a screenshot for the webcam grid
+  const matchesWithScreenshots = matches.filter(match => match.opts?.screenshot?.data);
+
+  if (matchesWithScreenshots.length === 0) {
+    return (
+      <Card className="bg-card/50 backdrop-blur-sm">
+        <CardContent className="pt-6">
+          <p className="text-center text-muted-foreground">No webcams with screenshots found for this query.</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {matches.map((match) => (
+      {matchesWithScreenshots.map((match) => (
         <Card key={match.ip_str + match.port} className="bg-card/50 backdrop-blur-sm overflow-hidden group">
           <div className="relative w-full h-48 overflow-hidden bg-muted flex items-center justify-center text-muted-foreground">
-            {match.opts?.screenshot?.data ? (
-              <img
-                src={`data:image/png;base64,${match.opts.screenshot.data}`}
-                alt={`Screenshot of ${match.ip_str}`}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-              />
-            ) : (
-              // Render an empty div to maintain space and background if no screenshot
-              <div className="w-full h-full"></div> 
-            )}
+            <img
+              src={`data:image/png;base64,${match.opts!.screenshot!.data}`} // Asserting existence due to filter
+              alt={`Screenshot of ${match.ip_str}`}
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
           </div>
           <CardContent className="p-3 text-sm">
             <div className="font-semibold text-primary">{match.ip_str}</div>
@@ -63,14 +72,21 @@ export function WebcamGrid({ matches, onSelectIp }: WebcamGridProps) {
               >
                 View Details
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full"
-                onClick={() => window.open(`https://www.shodan.io/host/${match.ip_str}`, '_blank', 'noopener noreferrer')}
-              >
-                View on Shodan
-              </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full"
+                        onClick={() => window.open(`https://www.shodan.io/host/${match.ip_str}`, '_blank', 'noopener noreferrer')}
+                    >
+                        View on Shodan <ExternalLink className="ml-2 h-4 w-4" />
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                    <p>View detailed information about this device on Shodan, a search engine for internet-connected devices.</p>
+                </TooltipContent>
+              </Tooltip>
             </div>
           </CardContent>
         </Card>
