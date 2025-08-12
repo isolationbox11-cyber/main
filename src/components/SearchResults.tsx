@@ -17,6 +17,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { IPDetailsSheet } from "./IPDetailsSheet";
+import { getFlagEmoji } from "@/lib/utils";
 
 interface ShodanMatch {
   ip_str: string;
@@ -25,6 +26,7 @@ interface ShodanMatch {
   hostnames: string[];
   location: {
     country_name: string;
+    country_code: string;
     city: string | null;
   };
   data: string;
@@ -81,7 +83,10 @@ export function SearchResults({ results, query }: SearchResultsProps) {
                         )}
                       </TableCell>
                       <TableCell className="hidden md:table-cell">{match.org}</TableCell>
-                      <TableCell className="hidden lg:table-cell">{match.location.country_name}{match.location.city ? `, ${match.location.city}` : ''}</TableCell>
+                      <TableCell className="hidden lg:table-cell">
+                        <span className="mr-2">{getFlagEmoji(match.location.country_code)}</span>
+                        {match.location.country_name}{match.location.city ? `, ${match.location.city}` : ''}
+                      </TableCell>
                       <TableCell>
                       <Badge variant="outline">{match.port}</Badge>
                       </TableCell>

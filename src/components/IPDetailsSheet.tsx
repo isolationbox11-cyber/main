@@ -8,8 +8,10 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { useQueries } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
+import { ShieldCheck, ShieldAlert, Bot, FileScan } from "lucide-react";
 
 interface IPDetailsSheetProps {
   ip: string | null;
@@ -29,21 +31,44 @@ const fetchIpIntel = async (service: string, ip: string) => {
 
 const intelServices = ["virustotal", "abuseipdb", "greynoise", "alienvault-otx"];
 
+const getScoreColor = (score: number) => {
+    if (score > 75) return "bg-destructive";
+    if (score > 25) return "bg-yellow-500";
+    return "bg-green-500";
+}
+
 export function IPDetailsSheet({ ip, isOpen, onOpenChange }: IPDetailsSheetProps) {
   const results = useQueries({
     queries: intelServices.map((service) => ({
       queryKey: [service, ip],
       queryFn: () => fetchIpIntel(service, ip!),
       enabled: !!ip,
-      staleTime: Infinity,
+      staleTime: 1000 * 60 * 5, // 5 minutes
     })),
   });
 
   const [vtResult, abuseResult, greyNoiseResult, otxResult] = results;
 
+  const renderCard = (title: string, icon: React.ReactNode, result: typeof vtResult, content: React.ReactNode) => (
+    <Card className="bg-card/80">
+        <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+                {icon}
+                {title}
+            </CardTitle>
+        </CardHeader>
+        <CardContent>
+            {result.isLoading && <Skeleton className="h-20 w-full" />}
+            {result.isError && <p className="text-destructive text-sm">Error: {result.error.message}</p>}
+            {result.isSuccess && result.data && content}
+            {result.isSuccess && !result.data && <p className="text-muted-foreground text-sm">No data available.</p>}
+        </CardContent>
+    </Card>
+  );
+
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-2xl overflow-y-auto">
+      <SheetContent className="w-full sm:max-w-2xl overflow-y-auto bg-background/90 backdrop-blur-lg">
         <SheetHeader>
           <SheetTitle>IP Intelligence Report: {ip}</SheetTitle>
           <SheetDescription>
@@ -51,65 +76,50 @@ export function IPDetailsSheet({ ip, isOpen, onOpenChange }: IPDetailsSheetProps
           </SheetDescription>
         </SheetHeader>
         <div className="grid gap-4 py-4">
-            {/* VirusTotal */}
-            <Card>
-                <CardHeader><CardTitle>VirusTotal</CardTitle></CardHeader>
-                <CardContent>
-                    {vtResult.isLoading && <Skeleton className="h-20 w-full" />}
-                    {vtResult.isError && <p className="text-destructive">Error: {vtResult.error.message}</p>}
-                    {vtResult.data && (
-                        <div>
-                            <p>Reputation: <Badge>{vtResult.data.data.attributes.reputation}</Badge></p>
-                            <p>Malicious: {vtResult.data.data.attributes.last_analysis_stats.malicious}</p>
-                            <p>Suspicious: {vtResult.data.data.attributes.last_analysis_stats.suspicious}</p>
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
-            {/* AbuseIPDB */}
-            <Card>
-                <CardHeader><CardTitle>AbuseIPDB</CardTitle></CardHeader>
-                <CardContent>
-                    {abuseResult.isLoading && <Skeleton className="h-20 w-full" />}
-                    {abuseResult.isError && <p className="text-destructive">Error: {abuseResult.error.message}</p>}
-                    {abuseResult.data && (
-                        <div>
-                            <p>Abuse Score: <Badge variant={abuseResult.data.data.abuseConfidenceScore > 50 ? "destructive" : "secondary"}>{abuseResult.data.data.abuseConfidenceScore}%</Badge></p>
-                            <p>Total Reports: {abuseResult.data.data.totalReports}</p>
-                            <p>Country: {abuseResult.data.data.countryCode}</p>
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
-            {/* GreyNoise */}
-            <Card>
-                <CardHeader><CardTitle>GreyNoise</CardTitle></CardHeader>
-                <CardContent>
-                    {greyNoiseResult.isLoading && <Skeleton className="h-20 w-full" />}
-                    {greyNoiseResult.isError && <p className="text-destructive">Error: {greyNoiseResult.error.message}</p>}
-                    {greyNoiseResult.data && (
-                        <div>
-                            <p>Noise: <Badge variant={greyNoiseResult.data.noise ? "destructive" : "secondary"}>{greyNoiseResult.data.noise ? "Yes" : "No"}</Badge></p>
-                            <p>Classification: {greyNoiseResult.data.classification}</p>
-                            <p>Last Seen: {greyNoiseResult.data.last_seen}</p>
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
-            {/* AlienVault OTX */}
-            <Card>
-                <CardHeader><CardTitle>AlienVault OTX</CardTitle></CardHeader>
-                <CardContent>
-                    {otxResult.isLoading && <Skeleton className="h-20 w-full" />}
-                    {otxResult.isError && <p className="text-destructive">Error: {otxResult.error.message}</p>}
-                    {otxResult.data && (
-                        <div>
-                            <p>Pulse Count: <Badge>{otxResult.data.pulse_info.count}</Badge></p>
-                            <p>Reputation: {otxResult.data.reputation?.reputation || "N/A"}</p>
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
+            {renderCard("VirusTotal", <ShieldCheck className="text-blue-500" />, vtResult,
+                vtResult.data && (
+                    <div className="space-y-2 text-sm">
+                        <p>Reputation: <Badge>{vtResult.data.data.attributes.reputation}</Badge></p>
+                        <p>Detections: 
+                            <span className="font-bold text-red-500 ml-1">{vtResult.data.data.attributes.last_analysis_stats.malicious} Malicious</span>, 
+                            <span className="font-bold text-yellow-500 ml-1">{vtResult.data.data.attributes.last_analysis_stats.suspicious} Suspicious</span>
+                        </p>
+                        <p className="text-xs text-muted-foreground pt-1">Based on analysis from over 70 security vendors.</p>
+                    </div>
+                )
+            )}
+            
+            {renderCard("AbuseIPDB", <ShieldAlert className="text-red-500" />, abuseResult,
+                abuseResult.data && (
+                    <div className="space-y-2 text-sm">
+                        <div className="font-medium">Abuse Confidence Score: {abuseResult.data.data.abuseConfidenceScore}%</div>
+                        <Progress value={abuseResult.data.data.abuseConfidenceScore} indicatorClassName={getScoreColor(abuseResult.data.data.abuseConfidenceScore)} />
+                        <p className="text-xs text-muted-foreground pt-1">Score indicates the confidence that this IP is malicious, based on {abuseResult.data.data.totalReports.toLocaleString()} reports.</p>
+                        <p>Country: {abuseResult.data.data.countryCode}</p>
+                    </div>
+                )
+            )}
+
+            {renderCard("GreyNoise", <Bot className="text-gray-500" />, greyNoiseResult,
+                greyNoiseResult.data && (
+                    <div className="space-y-2 text-sm">
+                        <p>Internet Noise: <Badge variant={greyNoiseResult.data.noise ? "destructive" : "secondary"}>{greyNoiseResult.data.noise ? "Yes (Likely a scanner)" : "No"}</Badge></p>
+                        <p>Classification: <Badge variant="outline">{greyNoiseResult.data.classification || "N/A"}</Badge></p>
+                        <p>Last Seen: {greyNoiseResult.data.last_seen ? new Date(greyNoiseResult.data.last_seen).toLocaleDateString() : "N/A"}</p>
+                        <p className="text-xs text-muted-foreground pt-1">Identifies IPs that are part of mass-scanning activities.</p>
+                    </div>
+                )
+            )}
+
+            {renderCard("AlienVault OTX", <FileScan className="text-green-500" />, otxResult,
+                otxResult.data && (
+                    <div className="space-y-2 text-sm">
+                        <p>Associated Pulses: <Badge>{otxResult.data.pulse_info.count}</Badge></p>
+                        <p className="text-xs text-muted-foreground pt-1">"Pulses" are collections of threat indicators from the OTX community.</p>
+                        <p>Reputation: {otxResult.data.reputation?.reputation || "N/A"}</p>
+                    </div>
+                )
+            )}
         </div>
       </SheetContent>
     </Sheet>
