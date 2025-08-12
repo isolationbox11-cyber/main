@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { getFlagEmoji } from "@/lib/utils";
-import { ImageOff } from "lucide-react"; // Import a placeholder icon
+// Removed ImageOff as it's no longer needed for placeholder
 
 interface ShodanMatch {
   ip_str: string;
@@ -39,10 +39,8 @@ export function WebcamGrid({ matches, onSelectIp }: WebcamGridProps) {
                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
             ) : (
-              <div className="flex flex-col items-center justify-center text-center p-4">
-                <ImageOff className="h-12 w-12 mb-2" />
-                <span className="text-sm">No Screenshot Available</span>
-              </div>
+              // Render an empty div to maintain space and background if no screenshot
+              <div className="w-full h-full"></div> 
             )}
           </div>
           <CardContent className="p-3 text-sm">

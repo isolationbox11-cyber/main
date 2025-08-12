@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button";
 import { IPDetailsSheet } from "./IPDetailsSheet";
 import { getFlagEmoji } from "@/lib/utils";
 import { WebcamGrid } from "./WebcamGrid";
-import { ImageOff, ExternalLink } from "lucide-react"; // Import ExternalLink icon
+import { ExternalLink } from "lucide-react"; // Removed ImageOff as it's no longer needed for placeholder
 
 interface ShodanMatch {
   ip_str: string;
@@ -164,10 +164,8 @@ export function SearchResults({ results, query, displayMode, onFacetClick }: Sea
                                   className="w-24 h-auto rounded-md border object-cover"
                               />
                           ) : (
-                              <div className="flex flex-col items-center justify-center text-muted-foreground text-xs w-24 h-auto">
-                                  <ImageOff className="h-6 w-6 mb-1" />
-                                  No Screenshot
-                              </div>
+                              // Render nothing if no screenshot
+                              <div className="w-24 h-auto"></div> 
                           )}
                         </TableCell>
                       </TableRow>
