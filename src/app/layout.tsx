@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "../globals.css";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Providers } from "@/components/providers";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -17,8 +17,6 @@ export const metadata: Metadata = {
   description: "Your all-in-one platform for security intelligence.",
 };
 
-const queryClient = new QueryClient();
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -27,7 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={inter.className}>
-        <QueryClientProvider client={queryClient}>
+        <Providers>
           <TooltipProvider>
             <Toaster />
             <Sonner />
@@ -43,7 +41,7 @@ export default function RootLayout({
               </div>
             </div>
           </TooltipProvider>
-        </QueryClientProvider>
+        </Providers>
       </body>
     </html>
   );
